@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Google Auth</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
+
+</head>
+
+<body>
+    <button id="googleSignInBtn">Sign In with Google</button>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAH0YegOcfvhGrSkcTmBiAB8wfW7oEuSco",
+            authDomain: "auth-demo-a4386.firebaseapp.com",
+            projectId: "auth-demo-a4386",
+            appId: "1:216685549681:web:4ba2c813f8c9439fc0a3d0"
+        }
+
+        firebase.initializeApp(firebaseConfig)
+        const auth = firebase.auth()
+        const provider = new firebase.auth.GoogleAuthProvider()
+
+        async function signInWithGoogle() {
+            try {
+                const result = await auth.signInWithPopup(provider)
+                const user = result.user
+                const idToken = await user.getIdToken()
+
+                const res = await fetch("http://localhost:5000/firebase/sign-in", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ idToken })
+                })
+
+                const data = await res.json()
+                console.log(data)
+            } catch (error) {
+                console.error("Sign-in error:", error)
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("googleSignInBtn").addEventListener("click", signInWithGoogle)
+        })
+    </script>
+</body>
+
+</html>
