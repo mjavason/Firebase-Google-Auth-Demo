@@ -3,6 +3,8 @@ A simple demonstration of how to implement Google authentication using Firebase 
 
 This project showcases how to set up Firebase, configure Google OAuth, and integrate authentication endpoints for secure user login.
 
+ Firebase Authentication does not require review or manual approval to be used in production. No submission is necessary. Once authorized domains are set and Google sign-in is enabled in Firebase Console, it is fully operational in production.
+
 **Prerequisites**
 
 - Node.js and npm (or yarn) installed on your system. You can download them from the [official Node.js website](https://nodejs.org).
