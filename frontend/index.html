@@ -14,12 +14,21 @@
     <button id="googleSignInBtn">Sign In with Google</button>
 
     <script>
+        //Dev
         const firebaseConfig = {
             apiKey: "AIzaSyAH0YegOcfvhGrSkcTmBiAB8wfW7oEuSco",
             authDomain: "auth-demo-a4386.firebaseapp.com",
             projectId: "auth-demo-a4386",
             appId: "1:216685549681:web:4ba2c813f8c9439fc0a3d0"
         }
+
+        // Betguard
+        // const firebaseConfig = {
+        //     apiKey: "AIzaSyD4D8o8_dVZFTl4IgWQr_eikwg98ywAdlY",
+        //     authDomain: "betguard-13dfd.firebaseapp.com",
+        //     projectId: "betguard-13dfd",
+        //     appId: "1:760349569924:web:0d7f2a8a9a7574731063d1",
+        // };
 
         firebase.initializeApp(firebaseConfig)
         const auth = firebase.auth()
@@ -31,7 +40,7 @@
                 const user = result.user
                 const idToken = await user.getIdToken()
 
-                const res = await fetch("http://localhost:5000/firebase/sign-in", {
+                const res = await fetch("http://localhost:5050/firebase/sign-in", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ idToken })
