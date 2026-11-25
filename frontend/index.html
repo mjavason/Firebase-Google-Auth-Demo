@@ -12,6 +12,7 @@
 
 <body>
     <button id="googleSignInBtn">Sign In with Google</button>
+    <button id="appleSignInBtn">Sign In with Apple</button>
 
     <script>
         //Dev
@@ -22,17 +23,13 @@
             appId: "1:216685549681:web:4ba2c813f8c9439fc0a3d0"
         }
 
-        // Betguard
-        // const firebaseConfig = {
-        //     apiKey: "AIzaSyD4D8o8_dVZFTl4IgWQr_eikwg98ywAdlY",
-        //     authDomain: "betguard-13dfd.firebaseapp.com",
-        //     projectId: "betguard-13dfd",
-        //     appId: "1:760349569924:web:0d7f2a8a9a7574731063d1",
-        // };
-
         firebase.initializeApp(firebaseConfig)
         const auth = firebase.auth()
         const provider = new firebase.auth.GoogleAuthProvider()
+
+        const appleProvider = new firebase.auth.OAuthProvider('apple.com');
+        appleProvider.addScope('email');
+        appleProvider.addScope('name');
 
         async function signInWithGoogle() {
             try {
@@ -52,6 +49,47 @@
                 console.error("Sign-in error:", error)
             }
         }
+
+
+        async function signInWithApple() {
+            try {
+                const result = await auth.signInWithPopup(appleProvider);
+
+                const user = result.user;
+
+                // Firebase ID token
+                const idToken = await user.getIdToken();
+
+                // Send to your existing backend
+                const res = await fetch("http://localhost:5050/firebase/sign-in", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ idToken })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || "Backend authentication failed");
+                }
+
+                console.log("Apple sign-in successful:", data);
+
+            } catch (error) {
+                console.error("Apple sign-in error:", error);
+
+                if (error.code === "auth/popup-closed-by-user") {
+                    console.log("User closed the authentication popup.");
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("appleSignInBtn")
+                .addEventListener("click", signInWithApple);
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("googleSignInBtn").addEventListener("click", signInWithGoogle)
